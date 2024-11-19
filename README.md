@@ -43,26 +43,51 @@ Ensure your middleware.ts file includes logic to check for MFA status and redire
 Example:
 
 ```typescript
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 
-import { withClerkMiddleware, getAuth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+const isMFARoute = createRouteMatcher(['/mfa(.*)'])
+const isSignInRoute = createRouteMatcher(['/sign-in(.*)'])
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth()
 
-export default withClerkMiddleware((req) => {
-  const { userId, user } = getAuth(req);
-  if (userId && !user?.mfaEnabled) {
-    return NextResponse.redirect(new URL("/setup-mfa", req.url));
+  if (userId !== null && isSignInRoute(req) && !isMFARoute(req)) {
+    // redirect to root if logged in
+    return NextResponse.redirect(new URL('/', req.url))
   }
-  return NextResponse.next();
-});
+  if (userId !== null && !isMFARoute(req)) {
+    const res = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+      },
+    })
+
+    const userData = await res.json()
+
+
+    if (userData.two_factor_enabled === false) {
+      return NextResponse.redirect(new URL('/mfa', req.url))
+
+    }
+
+
+
+  }
+})
 
 export const config = {
-  matcher: ["/protected-path", "/another-protected-path"],
-};
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+}
+
 ```
 Test MFA enforcement:
 
 Navigate to any route while signed in. If MFA is not enabled, you will be redirected to the /mfa page.
-
 
 Found an issue or have feedback?
 
