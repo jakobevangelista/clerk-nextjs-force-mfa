@@ -51,7 +51,7 @@ export default function Home() {
             How It Works
           </h2>
           <p className="text-gray-600 mb-4">
-            This template uses Clerk's authentication system to enforce MFA. Once a user signs up or logs in, they are required to set up and use a second factor for authentication, ensuring an extra layer of security for your application.
+            This template uses Clerk&apos;s authentication system to enforce MFA. Once a user signs up or logs in, they are required to set up and use a second factor for authentication, ensuring an extra layer of security for your application.
           </p>
           <p className="text-gray-600">
             Explore the code to see how MFA is implemented and enforced throughout the application flow.
