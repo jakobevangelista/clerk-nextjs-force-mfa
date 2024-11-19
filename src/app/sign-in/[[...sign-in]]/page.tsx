@@ -1,4 +1,3 @@
-import { SignIn } from "@clerk/nextjs";
 import SignInForm from "./MultiFactore";
 
 export default function Page() {
