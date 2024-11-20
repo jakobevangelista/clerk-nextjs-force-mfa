@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -8,7 +9,7 @@ export default function Home() {
       <main className="max-w-4xl w-full bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="p-8 sm:p-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
-            MFA Enforcement Template
+            <Image className="pb-4" src={'/clerk.svg'} width={100} height={100} alt="Clerk Logo" />MFA Enforcement Template
           </h1>
           <p className="text-lg text-gray-600 mb-8">
             This template demonstrates how to enforce Multi-Factor Authentication (MFA) using Clerk in a Next.js application.
